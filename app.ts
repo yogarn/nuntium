@@ -18,9 +18,13 @@ interface Message {
 app.set("view engine", "ejs");
 
 app.get("/", (req: Request, res: Response) => {
+  res.render("index");
+});
+
+app.get("/chat", (req: Request, res: Response) => {
   const username = String(req.query.username || "Anonymous");
   const room = String(req.query.room || "public");
-  res.render("index", { username, room });
+  res.render("chat", { username, room });
 });
 
 io.on("connection", (socket: Socket) => {
