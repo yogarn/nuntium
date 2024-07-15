@@ -1,47 +1,105 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Nuntium</title>
-</head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
 
-<body>
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+
+      li {
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+      }
+
+      form {
+        display: flex;
+        padding: 10px;
+      }
+
+      form input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 2px solid black;
+        border-right: none;
+        border-radius: 5px 0 0 5px;
+      }
+
+      form button {
+        padding: 10px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+      }
+
+      form button:hover {
+        background: #0056b3;
+      }
+
+      #messages {
+        padding: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
+      <input
+        id="input"
+        autocomplete="off"
+        placeholder="Type your message here..."
+      />
+      <button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var messages = document.getElementById('messages');
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-        var username = '<%= username %>';
-        var room = '<%= room %>'
+      var messages = document.getElementById("messages");
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+      var username = "<%= username %>";
+      var room = "<%= room %>";
 
-        var socket = io({
-            query: {
-                username,
-                room
-            }
-        });
+      var socket = io({
+        query: {
+          username,
+          room,
+        },
+      });
 
-        socket.emit('join', room)
+      socket.emit("join", room);
 
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (input.value) {
-                socket.emit(`message`, { username: username, message: input.value });
-                input.value = '';
-            }
-        });
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("message", { username: username, message: input.value });
+          input.value = "";
+        }
+      });
 
-        socket.on(`message`, function (data) {
-            var item = document.createElement('li');
-            item.textContent = data.username + ': ' + data.message;
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
-        });
+      socket.on("message", function (data) {
+        var item = document.createElement("li");
+        item.textContent = data.username + ": " + data.message;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
     </script>
-</body>
-
+  </body>
 </html>
